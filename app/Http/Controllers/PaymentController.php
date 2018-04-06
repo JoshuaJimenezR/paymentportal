@@ -43,6 +43,7 @@ class PaymentController extends Controller
             "hash" => md5($order.$request->input('creditCardAmount').$timestamp)
         ];
 
+
         return $info;
     }
 }

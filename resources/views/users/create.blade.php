@@ -8,13 +8,11 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['action' => 'UsersController@store']) !!}
-
-
+            {!! Form::open(['action' => 'UsersController@store', 'autocomplete' => 'off']) !!}
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
-                            <label for="creditCardNumber">Username</label>
+                            <label for="username">Username</label>
                             {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'Username', 'required']); !!}
 
                             @if ($errors->has('username'))
@@ -28,7 +26,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="creditCardNumber">Email</label>
+                            <label for="email">Email</label>
                             {!! Form::email('email', null, ['class' => 'form-control', 'placeholder' => 'email@domain.com', 'required']); !!}
 
                             @if ($errors->has('email'))
@@ -42,7 +40,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group{{ $errors->has('alias') ? ' has-error' : '' }}">
-                            <label for="creditCardNumber">BIN</label>
+                            <label for="alias">BIN</label>
                             {!! Form::text('alias', null, ['class' => 'form-control', 'placeholder' => '123456', 'required']); !!}
 
                             @if ($errors->has('alias'))
@@ -50,6 +48,19 @@
                                         <strong>{{ $errors->first('alias') }}</strong>
                                     </span>
                             @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="creditCardNumber">Role</label>
+                            <select name="role" id="role" class="form-control">
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ $role->id == 2? 'selected' : '' }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -68,10 +79,10 @@
                             @endif
                         </div>
 
-                        <div class="form-group">
+                       {{-- <div class="form-group">
                             <label for="password-confirm">Confirm Password</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                        </div>
+                        </div>--}}
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block">

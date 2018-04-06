@@ -16,6 +16,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>BIN</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </thead>
             <tbody>
@@ -24,6 +25,11 @@
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->alias }}</td>
+                    <td>
+                        @foreach($user->roles as $role)
+                            {{ $role->name }}
+                        @endforeach
+                    </td>
                     <td><a href="/users/{{ $user->id }}/edit">Edit</a></td>
                 </tr>
             @endforeach

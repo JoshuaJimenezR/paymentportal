@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use App\Role;
+use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
@@ -25,7 +27,9 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('users.create');
+
+        $roles = Role::all();
+        return view('users.create', compact("roles"));
     }
 
     /**
@@ -40,8 +44,10 @@ class UsersController extends Controller
             'username' => 'required|string|min:4|max:255|unique:users',
             'alias' => 'required|string|max:6|unique:users',
             'email' => 'required|string|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
         ]);
+
+        $role = Role::find($request->input('role'));
 
         $user = new User();
 
@@ -49,8 +55,9 @@ class UsersController extends Controller
         $user->email = $request['email'];
         $user->alias = $request['alias'];
         $user->password = bcrypt($request['password']);
-
         $user->save();
+
+        $user->attachRole($role);
 
         return redirect('/users');
     }
@@ -73,9 +80,10 @@ class UsersController extends Controller
      */
     public function edit($id) {
 
+        $roles = Role::all();
         $user = User::find($id);
 
-        return view('users.edit', compact('user'));
+        return view('users.edit', compact('user','roles' ));
     }
 
     /**
@@ -89,6 +97,8 @@ class UsersController extends Controller
 
         $user = User::find($id);
 
+        $role = Role::find($request->input('role'));
+
         $this->validate($request, [
             'username' => 'required|string|min:4|max:255|unique:users,username,'.$user->id,
             'alias' => 'required|string|max:6|unique:users,alias,'.$user->id,
@@ -98,7 +108,16 @@ class UsersController extends Controller
         $user->username = $request['username'];
         $user->email = $request['email'];
         $user->alias = $request['alias'];
+
+        if(!empty($request['new_password'])){
+            $user->password = bcrypt($request['new_password']);
+        }
+
         $user->save();
+
+        DB::table('role_user')->where('user_id', '=', $user->id)->delete();
+
+        $user->attachRole($role);
 
         return redirect('/users');
     }

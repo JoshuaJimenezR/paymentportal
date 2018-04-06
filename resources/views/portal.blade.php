@@ -36,14 +36,16 @@
                         <!-- Authentication Links -->
                         @if (Auth::guest())
                             <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                            <li><a href="/users">Users</a></li>
-                            <li><a href="/transactions">Transactions</a></li>
+                            @role('admin')
+                                <li><a href="/users">Users</a></li>
+                                <li><a href="/transactions">Transactions</a></li>
+                            @endrole
+
                             <li><a href="/payment">Make Payment</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->username }} <span class="caret"></span>
+                                    {{ ucfirst(Auth::user()->username) }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">

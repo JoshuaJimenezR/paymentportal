@@ -16,11 +16,21 @@ Route::middleware(['auth'])->group(function () {
         return redirect("/payment");
     });
 
+    Route::get('/home', function () {
+        return redirect("/payment");
+    });
+
     Route::get('/payment', 'PaymentController@index');
     Route::post('/payment/create', 'PaymentController@create');
 
-    Route::resource('/users', 'UsersController');
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::resource('/users', 'UsersController');
+    });
 
 });
 
-Auth::routes();
+//Auth::routes();
+
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
