@@ -1,9 +1,9 @@
-@extends('portal')
+@extends('layouts.portal')
 
 @section('content')
     <div class="row">
         <div class="col-md-9">
-            <h1>index users</h1>
+            <h1>Users</h1>
         </div>
         <div class="col-md-3">
             <a href="/users/create" class="btn btn-primary pull-right">Create</a>

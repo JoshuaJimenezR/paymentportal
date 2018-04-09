@@ -1,4 +1,4 @@
-@extends('portal')
+@extends('layouts.portal')
 
 @section('content')
     <div class="row">

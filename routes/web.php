@@ -12,12 +12,11 @@
 */
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return redirect("/payment");
-    });
+    Route::get('/', 'HomeController@index');
+    Route::post('/', 'HomeController@index');
 
     Route::get('/home', function () {
-        return redirect("/payment");
+        return redirect("/");
     });
 
     Route::get('/payment', 'PaymentController@index');
