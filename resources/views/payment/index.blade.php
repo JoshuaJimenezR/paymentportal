@@ -13,7 +13,6 @@
                                name="creditCardNumber"
                                id="creditCardNumber"
                                placeholder="Card Number"
-                               value="4745812816872287"
                                required
                                 />
 
@@ -34,7 +33,6 @@
                                id="creditCardHolderName"
                                name="creditCardHolderName"
                                placeholder="Card Holder's Name"
-                               value="Rodrigo Espinoza Morales"
                                required
                                 />
                         @if ($errors->has('creditCardHolderName'))
@@ -59,7 +57,7 @@
                                     <option value="04">Apr</option>
                                     <option value="05">May</option>
                                     <option value="06">Jun</option>
-                                    <option value="07" selected>Jul</option>
+                                    <option value="07">Jul</option>
                                     <option value="08">Aug</option>
                                     <option value="09">Sep</option>
                                     <option value="10">Oct</option>
@@ -81,7 +79,7 @@
                                     <option value="17">2017</option>
                                     <option value="18">2018</option>
                                     <option value="19">2019</option>
-                                    <option value="20" selected>2020</option>
+                                    <option value="20">2020</option>
                                     <option value="21">2021</option>
                                     <option value="22">2022</option>
                                     <option value="23">2023</option>
@@ -114,7 +112,6 @@
                                    id="creditCardAmount"
                                    name="creditCardAmount"
                                    placeholder="Amount code"
-                                   value="1"
                                    required
                                     />
                         </div>
@@ -134,7 +131,6 @@
                                id="creditCardCVV"
                                name="creditCardCVV"
                                placeholder="CVV code"
-                               value="972"
                                required
                                 />
                         @if ($errors->has('creditCardCVV'))
@@ -172,7 +168,7 @@
                                   name="creditAddress"
                                   placeholder="Your Address"
                                   style="resize: vertical"
-                                  required>4790 Clover Drive</textarea>
+                                  required></textarea>
 
                         @if ($errors->has('creditAddress'))
                             <span class="help-block">
@@ -191,7 +187,6 @@
                                id="creditCity"
                                name="creditCity"
                                placeholder="City"
-                               value="Colorado Springs"
                                required
                                />
                         @if ($errors->has('creditCity'))
@@ -229,7 +224,6 @@
                                class="form-control"
                                name='creditZipCode'
                                placeholder="Zip code"
-                               value="80907"
                                required
                                />
 
@@ -248,7 +242,6 @@
                                id="creditContactNumber"
                                name="creditContactNumber"
                                placeholder="Phone"
-                               value="719-332-0539"
                                required
                                 />
 
@@ -268,7 +261,7 @@
                                   class="form-control"
                                   name="orderDescription"
                                   style="resize: vertical"
-                                  required>Transaction's Description</textarea>
+                                  required></textarea>
 
                         @if ($errors->has('orderDescription'))
                             <span class="help-block">

@@ -88,8 +88,6 @@ class PaymentController extends Controller
         ];
 
         //Call bank Api
-
-
         $credentials = base64_encode('panamamedical:xphOqvSMelMWpCNa9QpyOMJC5styAiYY');
 
         $ch = curl_init();
