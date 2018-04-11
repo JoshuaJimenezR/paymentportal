@@ -59,6 +59,11 @@ class UsersController extends Controller
 
         $user->attachRole($role);
 
+        $message = "User ". $request['username']." has been created!";
+
+        $request->session()->flash('message.level', 'success');
+        $request->session()->flash('message.content', $message);
+
         return redirect('/users');
     }
 

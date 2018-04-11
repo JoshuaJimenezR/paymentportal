@@ -117,14 +117,19 @@ class PaymentController extends Controller
 
         $updateOrder->order = $orderBank;
         $updateOrder->order_description = $request->input('orderDescription');
-        $updateOrder->response_code = $bankResponse['data']['response'];
+        $updateOrder->response_code = $bankResponse['data']['response_code'];
         $updateOrder->response = $bankResponse['data']['response_text'];
         $updateOrder->transaction_id = $bankResponse['data']['transaction_id'];
 
         $updateOrder->save();
 
-        $request->session()->flash('message.level', 'success');
-        $request->session()->flash('message.content', 'Transaction Approved!');
+        if($bankResponse['data']['response_code'] == 100){
+            $request->session()->flash('message.level', 'success');
+            $request->session()->flash('message.content', 'Transaction Approved!');
+        }else{
+            $request->session()->flash('message.level', 'danger');
+            $request->session()->flash('message.content', 'Transaction Rejected!');
+        }
 
         return redirect('/');
 

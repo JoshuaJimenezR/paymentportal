@@ -11,7 +11,7 @@
                             <span><i class="fa fa-usd f-s-40 color-primary"></i></span>
                         </div>
                         <div class="media-body media-text-right">
-                            <h2>${{ number_format($monthAmount, 2, '.', ',') }}</h2>
+                            <h2>${{ number_format($monthAmount, 0, '.', ',') }}</h2>
                             <p class="m-b-0">This Month Amount</p>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                             <span><i class="fa fa-user f-s-40 color-danger"></i></span>
                         </div>
                         <div class="media-body media-text-right">
-                            <h2>${{ number_format($todayAmount, 2, '.', ',')  }}</h2>
+                            <h2>${{ number_format($todayAmount, 0, '.', ',')  }}</h2>
                             <p class="m-b-0">Today's Amount</p>
                         </div>
                     </div>
@@ -60,31 +60,53 @@
     @endrole
 
     @if( count($orders) > 0 )
-
         <div class="row">
             <div class="col-sm-12">
                 <div class="pull-right">
-                    <a href="">Excel</a>
+                    <a href="" id="filters">Filters</a>
+                    &nbsp;
+                    &nbsp;
+                    <a href="/excel{{ (isset($_GET['startDate'])? '?startDate='.$_GET['startDate'] : '') }}{{ (isset($_GET['endDate'])? '&endDate='.$_GET['endDate'] :'') }}">Export table to Excel</a>
                 </div>
             </div>
         </div>
+
+        <div class="row" id="apply-filters" style="margin: 20px 0; {{ (isset($_GET['startDate'])? '' : 'display: none;') }}">
+            <div class="pull-right">
+                <form action="/" method="get" class="form-inline">
+                    <div class="form-group">
+                        <label for="exampleInputName2">Start Date</label>
+                        <input type="date" name="startDate"
+                               value="{{ (isset($_GET['startDate'])? $_GET['startDate'] : \Carbon\Carbon::yesterday()->format('Y-m-d')) }}">
+                    </div>
+                    &nbsp;
+                    &nbsp;
+                    <div class="form-group">
+                        <label for="exampleInputName2">End Date</label>
+                        <input type="date" name="endDate" value="{{ (isset($_GET['endDate'])? $_GET['endDate'] :  \Carbon\Carbon::now()->format('Y-m-d')) }}">
+                    </div>
+                    &nbsp;
+                    <button type="submit" class="btn btn-default">Filter</button>
+                </form>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="col-sm-12">
                 <table class="table table-striped">
                     <thead>
-                    <th>Name</th>
-                    @role('admin')
-                        <th>BIN</th>
-                        <th>Order</th>
-                    @endrole
-
-                    <th>Card</th>
-                    <th>Amount</th>
-                    <th>Transaction ID</th>
-                    <th>Status</th>
-                    <th>Response</th>
-                    <th>Date</th>
+                        <th>Name</th>
+                            @role('admin')
+                                <th>BIN</th>
+                                <th>Order</th>
+                            @endrole
+                        <th>Card</th>
+                        <th>Amount</th>
+                        <th>Transaction ID</th>
+                        <th>Status</th>
+                        <th>Response</th>
+                        <th>Date</th>
                     </thead>
                     <tbody>
                     @foreach ($orders as $order)
@@ -102,13 +124,13 @@
                                     case 0:
                                         ?><td>Pending</td><?php
                                     break;
-                                    case 1:
+                                    case 100:
                                         ?><td>Approved</td><?php
                                     break;
-                                    case 2:
+                                    case 200:
                                         ?><td>Rejected</td><?php
                                     break;
-                                    case 2:
+                                    case 3:
                                         ?><td>Error in transaction data or system error</td><?php
                                     break;
                                 }
@@ -119,7 +141,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {{ $orders->links() }}
+                {{ $orders->appends($_GET)->links() }}
             </div>
         </div>
     @else
@@ -133,4 +155,31 @@
     @endif
 
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $("#filters").click(function(e){
+                e.preventDefault();
+                $("#apply-filters").slideDown();
+            });
+        });
+    </script> 
+    <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
+
+    @if(session()->has('message.level'))
+        <script>
+            $.notify({
+                title: '<strong>Transaction: </strong>',
+                message: '{!! session('message.content') !!}:'
+            },{
+                type: '{{ session('message.level') }}',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+            });
+        </script>
+    @endif
 @endsection

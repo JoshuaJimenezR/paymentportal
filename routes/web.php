@@ -14,6 +14,7 @@
 Route::middleware(['auth'])->group(function () {
     Route::get('/', 'HomeController@index');
     Route::post('/', 'HomeController@index');
+    Route::get('/excel', 'HomeController@export');
 
     Route::get('/home', function () {
         return redirect("/");

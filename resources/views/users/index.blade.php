@@ -42,3 +42,22 @@
 
 
 @endsection
+
+@section('scripts')
+    <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
+
+    @if(session()->has('message.level'))
+        <script>
+            $.notify({
+                title: '<strong>User Created</strong>',
+                message: '{!! session('message.content') !!}:'
+            },{
+                type: '{{ session('message.level') }}',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+            });
+        </script>
+    @endif
+@endsection
