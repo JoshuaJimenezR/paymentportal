@@ -12,15 +12,25 @@
 */
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return redirect("/payment");
+    Route::get('/', 'HomeController@index');
+    Route::post('/', 'HomeController@index');
+    Route::get('/excel', 'HomeController@export');
+
+    Route::get('/home', function () {
+        return redirect("/");
     });
 
     Route::get('/payment', 'PaymentController@index');
     Route::post('/payment/create', 'PaymentController@create');
 
-    Route::resource('/users', 'UsersController');
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::resource('/users', 'UsersController');
+    });
 
 });
 
-Auth::routes();
+//Auth::routes();
+
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
