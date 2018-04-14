@@ -88,7 +88,8 @@ class PaymentController extends Controller
         ];
 
         //Call bank Api
-        $credentials = base64_encode('panamamedical:xphOqvSMelMWpCNa9QpyOMJC5styAiYY');
+        //$credentials = base64_encode('panamamedical:xphOqvSMelMWpCNa9QpyOMJC5styAiYY');
+        $credentials = base64_encode('mtmarketing:xyBjukme5TLWE4YWL9TmLWtPFcsRB2Cn');
 
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, 'https://tscproc.com/proc/pp');
