@@ -112,6 +112,7 @@
                                    id="creditCardAmount"
                                    name="creditCardAmount"
                                    placeholder="Amount code"
+                                   step="any"
                                    required
                                     />
                         </div>
