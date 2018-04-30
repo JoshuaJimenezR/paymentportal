@@ -127,13 +127,23 @@ class PaymentController extends Controller
             $updateOrder = Order::find($order->id);
             $updateOrder->order = $orderBank;
             $updateOrder->order_description = $request->input('orderDescription');
-            $updateOrder->response_code = 200;
-            $updateOrder->response = 'Rejected, an error occurred.';
+
+            if(isset($bankResponse['errors'])){
+                $updateOrder->response_code = $bankResponse['errors'][0]['status'];
+                $updateOrder->response = $bankResponse['errors'][0]['detail'];
+                $errorMessage = $bankResponse['errors'][0]['detail'];
+
+            }else{
+                $updateOrder->response_code = 400;
+                $updateOrder->response = 'Rejected, an error occurred.';
+                $errorMessage = 'An Error occurred';
+
+            }
+            $updateOrder->transaction_id = '';
 
             $updateOrder->save();
-
             $request->session()->flash('message.level', 'danger');
-            $request->session()->flash('message.content', 'An Error occurred');
+            $request->session()->flash('message.content', $errorMessage);
 
         }
 

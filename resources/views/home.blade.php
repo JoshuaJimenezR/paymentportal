@@ -130,8 +130,8 @@
                                     case 200:
                                         ?><td>Rejected</td><?php
                                     break;
-                                    case 3:
-                                        ?><td>Error in transaction data or system error</td><?php
+                                    case 400:
+                                        ?><td>Error</td><?php
                                     break;
                                 }
                             ?>
