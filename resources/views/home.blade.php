@@ -104,6 +104,9 @@
                         <th>Card</th>
                         <th>Amount</th>
                         <th>Transaction ID</th>
+                        @role('admin')
+                            <td>API Response</td>
+                        @endrole        
                         <th>Status</th>
                         <th>Response</th>
                         <th>Date</th>
@@ -119,6 +122,9 @@
                             <td>{{ substr($order->card_number, -4) }}</td>
                             <td>{{ number_format($order->amount, 2, '.', ',') }}</td>
                             <td>{{ $order->transaction_id }}</td>
+                            @role('admin')
+                                <td>{{ $order->response_code  }}</td>
+                            @endrole
                             <?php
                                 switch($order->response_code){
                                     case 0:
@@ -131,6 +137,7 @@
                                         ?><td>Rejected</td><?php
                                     break;
                                     case 400:
+                                    case 422:
                                         ?><td>Error</td><?php
                                     break;
                                 }
