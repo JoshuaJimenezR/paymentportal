@@ -24,12 +24,6 @@ class PaymentController extends Controller
             'creditCardExpiryYear' => 'required',
             'creditCardAmount' => 'required',
             'creditCardCVV' => 'required|min:3',
-            'creditCountry' => 'required|string',
-            'creditAddress' => 'required|string',
-            'creditCity' => 'required|string',
-            'creditState' => 'required|string',
-            'creditZipCode' => 'required|string',
-            'creditContactNumber' => 'required|string',
             'orderDescription' => 'required|string',
         ]);
 
@@ -48,12 +42,12 @@ class PaymentController extends Controller
         $order->card_expirity_year = $request->input('creditCardExpiryYear');
         $order->amount = $amount;
         $order->card_cvv = $request->input('creditCardCVV');
-        $order->country = $request->input('creditCountry');
-        $order->address = $request->input('creditAddress');
-        $order->city = $request->input('creditCity');
-        $order->state = $request->input('creditState');
-        $order->zipcode = $request->input('creditZipCode');
-        $order->phone_number = $request->input('creditContactNumber');
+        $order->country = '';
+        $order->address = '';
+        $order->city = '';
+        $order->state = '';
+        $order->zipcode = '';
+        $order->phone_number = '';
         $order->email = $email;
         $order->ip_address = $ipAddress;
         $order->save();
@@ -71,14 +65,8 @@ class PaymentController extends Controller
             "currency" => 'USD',
             "amount" => $amount,
             "cvv" => $request->input('creditCardCVV'),
-            "first_name" => $fullName[0],
+            "first_name" => $fullName[0], 
             "last_name" => (isset($fullName[1])? $fullName[1]: ""),
-            "address1" => $request->input('creditAddress'),
-            "city" => $request->input('creditCity'),
-            "state" => $request->input('creditState'),
-            "zip_code" => $request->input('creditZipCode'),
-            "country" => $request->input('creditCountry'),
-            "phone" => $request->input('creditContactNumber'),
             "email" => $email,
             "order" => $orderBank,
             "order_description" => $request->input('orderDescription'),
@@ -103,7 +91,7 @@ class PaymentController extends Controller
                 'Authorization: Basic '.$credentials
             )
         );
-        $response = curl_exec( $ch );
+        $response = curl_exec($ch);
 
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $header = substr($response, 0, $header_size);
@@ -112,22 +100,45 @@ class PaymentController extends Controller
         $bankResponse = json_decode($body, true);
 
         //Update Order
-        $updateOrder = Order::find($order->id);
+        if(isset($bankResponse['data'])){
+            $updateOrder = Order::find($order->id);
+            $updateOrder->order = $orderBank;
+            $updateOrder->order_description = $request->input('orderDescription');
+            $updateOrder->response_code = $bankResponse['data']['response_code'];
+            $updateOrder->response = $bankResponse['data']['response_text'];
+            $updateOrder->transaction_id = $bankResponse['data']['transaction_id'];
 
-        $updateOrder->order = $orderBank;
-        $updateOrder->order_description = $request->input('orderDescription');
-        $updateOrder->response_code = $bankResponse['data']['response_code'];
-        $updateOrder->response = $bankResponse['data']['response_text'];
-        $updateOrder->transaction_id = $bankResponse['data']['transaction_id'];
+            $updateOrder->save();
 
-        $updateOrder->save();
-
-        if($bankResponse['data']['response_code'] == 100){
-            $request->session()->flash('message.level', 'success');
-            $request->session()->flash('message.content', 'Transaction Approved!');
+            if($bankResponse['data']['response_code'] == 100){
+                $request->session()->flash('message.level', 'success');
+                $request->session()->flash('message.content', 'Transaction Approved!');
+            }else{
+                $request->session()->flash('message.level', 'danger');
+                $request->session()->flash('message.content', 'Transaction Rejected!');
+            }
         }else{
+            $updateOrder = Order::find($order->id);
+            $updateOrder->order = $orderBank;
+            $updateOrder->order_description = $request->input('orderDescription');
+
+            if(isset($bankResponse['errors'])){
+                $updateOrder->response_code = $bankResponse['errors'][0]['status'];
+                $updateOrder->response = $bankResponse['errors'][0]['detail'];
+                $errorMessage = $bankResponse['errors'][0]['detail'];
+
+            }else{
+                $updateOrder->response_code = 400;
+                $updateOrder->response = 'Rejected, an error occurred.';
+                $errorMessage = 'An Error occurred';
+
+            }
+            $updateOrder->transaction_id = '';
+
+            $updateOrder->save();
             $request->session()->flash('message.level', 'danger');
-            $request->session()->flash('message.content', 'Transaction Rejected!');
+            $request->session()->flash('message.content', $errorMessage);
+
         }
 
         return redirect('/');

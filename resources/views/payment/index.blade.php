@@ -112,6 +112,7 @@
                                    id="creditCardAmount"
                                    name="creditCardAmount"
                                    placeholder="Amount code"
+                                   step="any"
                                    required
                                     />
                         </div>
@@ -136,118 +137,6 @@
                         @if ($errors->has('creditCardCVV'))
                             <span class="help-block">
                                 <strong>Card CVV is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12">
-                    <div class="form-group{{ $errors->has('creditCountry') ? ' has-error' : '' }}">
-                        <label for="creditCountry">Country</label>
-                        <select class="form-control"
-                                name="creditCountry"
-                                id="creditCountry"
-                                required>
-
-                        </select>
-                        @if ($errors->has('creditCountry'))
-                            <span class="help-block">
-                                <strong>Country is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12">
-                    <div class="form-group{{ $errors->has('creditAddress') ? ' has-error' : '' }}">
-                        <label for="creditAddress">Billing Address</label>
-                        <textarea type="text"
-                                  class="form-control"
-                                  name="creditAddress"
-                                  placeholder="Your Address"
-                                  style="resize: vertical"
-                                  required></textarea>
-
-                        @if ($errors->has('creditAddress'))
-                            <span class="help-block">
-                                <strong>Billing Address is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-6">
-                    <div class="form-group{{ $errors->has('creditCity') ? ' has-error' : '' }}">
-                        <label for="creditCity">City</label>
-                        <input type="text"
-                               class="form-control"
-                               id="creditCity"
-                               name="creditCity"
-                               placeholder="City"
-                               required
-                               />
-                        @if ($errors->has('creditCity'))
-                            <span class="help-block">
-                                <strong>City field is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-6">
-                    <div class="form-group{{ $errors->has('creditState') ? ' has-error' : '' }}">
-                        <label for="creditState">State</label>
-                        <input type='text'
-                               id='creditState'
-                               class='form-control'
-                               name='creditState'
-                               placeholder='State'
-                               required
-                                />
-
-                        @if ($errors->has('creditState'))
-                            <span class="help-block">
-                                <strong>State field is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-6">
-                    <div class="form-group{{ $errors->has('creditZipCode') ? ' has-error' : '' }}">
-                        <label for="creditZipCode">Zip Code/PostCode</label>
-                        <input type="text"
-                               id='creditZipCode'
-                               class="form-control"
-                               name='creditZipCode'
-                               placeholder="Zip code"
-                               required
-                               />
-
-                        @if ($errors->has('creditZipCode'))
-                            <span class="help-block">
-                                <strong>ZipCode field is required</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-6">
-                    <div class="form-group{{ $errors->has('creditContactNumber') ? ' has-error' : '' }}">
-                        <label for="creditContactNumber">Contact Number</label>
-                        <input type="text"
-                               class="form-control"
-                               id="creditContactNumber"
-                               name="creditContactNumber"
-                               placeholder="Phone"
-                               required
-                                />
-
-                        @if ($errors->has('creditContactNumber'))
-                            <span class="help-block">
-                                <strong>Phone Number field is required</strong>
                             </span>
                         @endif
                     </div>
@@ -282,56 +171,7 @@
 
 @section('scripts')
     <script>
-        function getCountries() {
-            if ($('#creditCountry').has('option').length == 0) {
-                $.getJSON('/json/country.json', function(data) {
-                    var items = '<option value="" disabled selected>Choose a Country</option>';
-                    $.each(data, function(index, value) {
-                        if(index == '') {
-                            items += "<option value='' disabled>" + value + "</option>";
-                        } else{
-                            items += "<option value='" + index + "'>" + value + "</option>";
-                        }
-                    });
-                    $("#creditCountry").html(items);
-                });
-            }
-        }
-
-        function getStates(state) {
-            $.getJSON('/json/states/'+state+'.json', function(data) {
-                var items = '<option value="" disabled selected>Choose a State</option>';
-                $.each(data, function(index, value) {
-                    if(index == '') {
-                        items += "<option value='' disabled>" + value + "</option>";
-                    } else{
-                        items += "<option value='" + index + "'>" + value + "</option>";
-                    }
-                });
-
-                $("#creditState").html(items);
-
-            });
-        }
-
         $(document).ready(function () {
-            getCountries();
-
-            $("#creditCountry").change(function() {
-                $("#creditState").replaceWith("<select class='form-control' name='creditState' id='creditState' required></select>");
-                if($(this).val() == 'CA') {
-                    getStates ('ca');
-                } else if($(this).val() == 'GB') {
-                    getStates ('gb');
-
-                } else if($(this).val() == 'US') {
-                    getStates ('us');
-                } else {
-                    $("#creditState").replaceWith("<input type='text' id='creditState' class='form-control' name='creditState' placeholder='State' required/>");
-                }
-            });
-
-
             $("#makePayment").submit(function(e) {
                 $('body').loadingModal({
                     text: 'Loading...'
